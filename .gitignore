@@ -1,0 +1,15 @@
+# Binary
+library-api
+
+# Environment variables
+.env
+
+# Go
+*.exe
+*.out
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
