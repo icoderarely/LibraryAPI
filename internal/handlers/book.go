@@ -14,6 +14,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error xyz", http.StatusBadRequest)
 		return
 	}
+	defer r.Body.Close()
 
 	if err := db.CreateBook(&book); err != nil {
 		http.Error(w, "Error creating book", http.StatusInternalServerError)
