@@ -1,11 +1,14 @@
 package db
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
 	"github.com/icoderarely/LibraryAPI/internal/models"
 )
+
+var ErrNotFound = errors.New("user not found")
 
 func CreateBook(book *models.Book) error {
 	db := ConnectDB()
@@ -32,4 +35,20 @@ func CreateBook(book *models.Book) error {
 	book.ID = int(id)
 
 	return nil
+}
+
+func GetBook(id int) (models.Book, error) {
+	db := ConnectDB()
+	defer db.Close()
+
+	query := "SELECT id, title, author, genre, published_year, available, created_at FROM books WHERE id = ?"
+
+	var book models.Book
+
+	err := db.QueryRow(query, id).Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.PublishedYear, &book.Available, &book.CreatedAt)
+	if errors.Is(err, sql.ErrNoRows) {
+		return models.Book{}, ErrNotFound
+	}
+
+	return book, nil
 }

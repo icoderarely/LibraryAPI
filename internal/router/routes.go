@@ -13,7 +13,8 @@ func Router() *http.ServeMux {
 		w.Write([]byte("Hello"))
 	})
 
-	mux.HandleFunc("POST /books", handlers.CreateBook)
+	mux.HandleFunc("POST /books", handlers.CreateBookHandler)
+	mux.HandleFunc("GET /books/{id}", handlers.GetBookHandler)
 
 	return mux
 }
