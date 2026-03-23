@@ -15,7 +15,6 @@ func ConnectDB() *sql.DB {
 	if err != nil {
 		log.Fatal("unable to use data source name", err)
 	}
-	defer db.Close()
 
 	if err = db.Ping(); err != nil {
 		log.Fatal("cannot reach db:", err)

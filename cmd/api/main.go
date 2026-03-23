@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/icoderarely/LibraryAPI/internal/db"
 	"github.com/icoderarely/LibraryAPI/internal/router"
 	"github.com/joho/godotenv"
 )
@@ -16,13 +15,10 @@ func main() {
 		log.Fatal("error loading .env file")
 	}
 
-	db := db.ConnectDB()
-	defer db.Close()
-
 	fmt.Println("DB Connected, everything is working...")
 
-	router := router.Router()
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	mux := router.Router()
+	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Println(" [error] starting server...")
 		return
 	}
