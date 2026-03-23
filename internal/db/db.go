@@ -5,15 +5,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func ConnectDB() *sql.DB {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("error loading .env file")
-	}
-
 	dsn := os.Getenv("DSN")
 
 	db, err := sql.Open("mysql", dsn)
