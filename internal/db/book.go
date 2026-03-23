@@ -92,3 +92,29 @@ func GetBooks() ([]models.Book, error) {
 
 	return books, nil
 }
+
+func UpdateBook(id int, book *models.Book) error {
+	db := ConnectDB()
+	defer db.Close()
+
+	query := "UPDATE books SET title = ?, author = ?, genre = ?, published_year = ?, available = ? where id = ?"
+	result, err := db.Exec(
+		query,
+		book.Title,
+		book.Author,
+		book.Genre,
+		book.PublishedYear,
+		book.Available,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+
+	n, _ := result.RowsAffected()
+	if n == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}

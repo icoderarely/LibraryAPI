@@ -74,3 +74,41 @@ func GetBooksHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	var book models.Book
+	if err = json.NewDecoder(r.Body).Decode(&book); err != nil {
+		http.Error(w, "invalid body", http.StatusBadRequest)
+		return
+	}
+
+	err = db.UpdateBook(id, &book)
+	if err != nil {
+		http.Error(w, "some err", http.StatusInternalServerError)
+		return
+	}
+
+	updatedBook, err := db.GetBook(id)
+	if err != nil {
+		http.Error(w, "error fetching book", http.StatusBadRequest)
+		return
+	}
+
+	resp := map[string]interface{}{
+		"status": "success",
+		"data":   updatedBook,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		http.Error(w, "failed to encode response", http.StatusInternalServerError)
+		return
+	}
+}

@@ -16,6 +16,7 @@ func Router() *http.ServeMux {
 	mux.HandleFunc("POST /books", handlers.CreateBookHandler)
 	mux.HandleFunc("GET /books/{id}", handlers.GetBookHandler)
 	mux.HandleFunc("GET /books", handlers.GetBooksHandler)
+	mux.HandleFunc("PUT /books/{id}", handlers.UpdateBookHandler)
 
 	return mux
 }
