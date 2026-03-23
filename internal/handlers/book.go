@@ -112,3 +112,28 @@ func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func DeleteBookHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	isDeleted, err := db.DeleteBook(id)
+	if !isDeleted {
+		http.Error(w, "Error deleting data", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	resp := map[string]interface{}{
+		"status": "successfuly deleted",
+	}
+
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		http.Error(w, "failed to encode response", http.StatusInternalServerError)
+		return
+	}
+}

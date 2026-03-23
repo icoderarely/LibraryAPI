@@ -118,3 +118,25 @@ func UpdateBook(id int, book *models.Book) error {
 
 	return nil
 }
+
+func DeleteBook(id int) (bool, error) {
+	db := ConnectDB()
+	defer db.Close()
+
+	query := "DELETE FROM books WHERE id = ?"
+	result, err := db.Exec(query, id)
+	if err != nil {
+		return false, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	if rowsAffected == 0 {
+		return false, ErrNotFound
+	}
+
+	return true, nil
+}
