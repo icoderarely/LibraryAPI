@@ -52,3 +52,43 @@ func GetBook(id int) (models.Book, error) {
 
 	return book, nil
 }
+
+func GetBooks() ([]models.Book, error) {
+	db := ConnectDB()
+	defer db.Close()
+
+	query := "SELECT id, title, author, genre, published_year, available, created_at FROM books"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []models.Book
+
+	for rows.Next() {
+		var book models.Book
+
+		err := rows.Scan(
+			&book.ID,
+			&book.Title,
+			&book.Author,
+			&book.Genre,
+			&book.PublishedYear,
+			&book.Available,
+			&book.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		books = append(books, book)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return books, nil
+}
